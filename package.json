@@ -1,0 +1,38 @@
+{
+  "name": "kisaan-app",
+  "version": "1.0.0",
+  "description": "Full-Stack MERN Application - Farmers Grain Marketplace",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm run dev",
+    "client": "cd client && PORT=5055 npm start",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install:server": "cd server && npm install",
+    "install:client": "cd client && npm install", 
+    "install:all": "npm run install:server && npm run install:client",
+    "seed": "cd server && npm run seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chiragjain/kisaan.git"
+  },
+  "keywords": [
+    "agriculture",
+    "farmers",
+    "grain-trading",
+    "mern-stack",
+    "marketplace",
+    "e-commerce"
+  ],
+  "author": "Chirag Jain",
+  "license": "MIT"
+}

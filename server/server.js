@@ -16,9 +16,46 @@ const app = express();
 
 // Security middleware
 app.use(helmet());
+
+// CORS configuration for production and development
+let allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'http://localhost:3001', // Alternative local port
+  'http://localhost:5055', // Client dev server port
+  'https://agri-connect-omega.vercel.app', // Production frontend
+];
+
+// Add CLIENT_URL from environment if it exists
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
+
+// Add ALLOWED_ORIGINS from environment if it exists (comma-separated)
+if (process.env.ALLOWED_ORIGINS) {
+  const envOrigins = process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim());
+  allowedOrigins = [...new Set([...allowedOrigins, ...envOrigins])]; // Remove duplicates
+}
+
+console.log('🌐 Allowed CORS Origins:', allowedOrigins);
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, Postman, or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`🚫 CORS blocked request from origin: ${origin}`);
+      callback(new Error(`Not allowed by CORS. Origin: ${origin}`));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+  preflightContinue: false,
+  optionsSuccessStatus: 200
 }));
 
 // Rate limiting
@@ -33,6 +70,9 @@ app.use('/api/', limiter);
 app.use(morgan('combined'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Handle preflight requests explicitly
+app.options('*', cors());
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
@@ -118,6 +158,8 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🌐 Client URL: ${process.env.CLIENT_URL || 'Not set'}`);
+  console.log(`🔗 API Base: http://localhost:${PORT}/api/v1`);
 });
 
 module.exports = app;

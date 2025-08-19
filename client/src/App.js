@@ -73,7 +73,7 @@ function App() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <Helmet>
-        <title>Kisaan - Digital Grain Marketplace</title>
+        <title>AgriConnect - Digital Grain Marketplace</title>
         <meta name="description" content="Connect farmers with buyers for fresh, quality grains" />
       </Helmet>
 

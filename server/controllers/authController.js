@@ -39,11 +39,18 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @route   POST /api/auth/register
 // @access  Public
 exports.register = asyncHandler(async (req, res, next) => {
+  console.log('📝 Registration attempt:', {
+    body: req.body,
+    headers: req.headers,
+    origin: req.get('origin')
+  });
+
   const { name, email, password, phone, role, address, language } = req.body;
 
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
+    console.log('❌ User already exists with email:', email);
     return res.status(400).json({
       success: false,
       message: 'User with this email already exists'
@@ -53,6 +60,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   // Check if phone number already exists
   const existingPhone = await User.findOne({ phone });
   if (existingPhone) {
+    console.log('❌ User already exists with phone:', phone);
     return res.status(400).json({
       success: false,
       message: 'User with this phone number already exists'
@@ -60,6 +68,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   }
 
   // Create user
+  console.log('✅ Creating new user...');
   const user = await User.create({
     name,
     email,
@@ -69,6 +78,8 @@ exports.register = asyncHandler(async (req, res, next) => {
     address,
     language: language || 'en'
   });
+
+  console.log('✅ User created successfully:', user.email);
 
   // Send welcome email
   try {
@@ -88,8 +99,9 @@ exports.register = asyncHandler(async (req, res, next) => {
         Kisaan Team
       `
     });
+    console.log('✅ Welcome email sent successfully to:', user.email);
   } catch (error) {
-    console.error('Welcome email sending failed:', error);
+    console.warn('⚠️  Welcome email sending failed (registration still successful):', error.message);
   }
 
   sendTokenResponse(user, 201, res);

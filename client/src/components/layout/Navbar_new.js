@@ -94,7 +94,7 @@ const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center">
               <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-3 py-2 rounded-lg font-bold text-xl">
-                🌾 Kisaan
+                🌾 AgriConnect
               </div>
             </Link>
 

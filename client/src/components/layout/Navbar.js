@@ -85,7 +85,7 @@ const Navbar = () => {
                   <RectangleStackIcon className="h-6 w-6" />
                 </div>
                 <span className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
-                  Kisaan
+                 AgriConnect 
                 </span>
               </Link>
             </div>
